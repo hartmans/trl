@@ -24,7 +24,6 @@ import pyarrow.types
 from datasets import Dataset, DatasetDict
 from transformers import PreTrainedTokenizerBase, ProcessorMixin
 
-
 DatasetType = TypeVar("DatasetType", Dataset, DatasetDict)
 
 
@@ -141,6 +140,16 @@ def apply_chat_template(
     ]:
         raise KeyError(f"Invalid keys in the example: {example_keys}")
 
+    # If tools is not provided and example contains tools, use the
+    # tools from the example.
+    if tools is None and 'tools' in example:
+        tools = example['tools']
+        if not isinstance(tools, list):
+            raise ValueError('tools provided in an example should be a list.')
+        for tool in tools:
+            if not isinstance(tool, dict):
+                raise ValueError('Each tool in an example needs to be a JSON Schema dictionary.')
+        
     # Apply the chat template to the whole conversation
     if "messages" in example:
         messages = tokenizer.apply_chat_template(example["messages"], tools=tools, tokenize=False, **template_kwargs)
