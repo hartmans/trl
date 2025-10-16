@@ -148,7 +148,7 @@ def apply_chat_template(
     # Apply the chat template to the prompt, adding the generation prompt
     if "prompt" in example:
         last_role = example["prompt"][-1]["role"]
-        if last_role == "user":
+        if last_role == "user" or last_role == 'tool':
             add_generation_prompt = True
             continue_final_message = False
         elif last_role == "assistant":
