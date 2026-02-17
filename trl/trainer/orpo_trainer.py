@@ -318,7 +318,9 @@ class ORPOTrainer(BaseTrainer):
         # of the input, floating-point operations will not be computed." To suppress this warning, we set the
         # "estimate_tokens" key in the model's "warnings_issued" dictionary to True. This acts as a flag to indicate
         # that the warning has already been issued.
-        model.warnings_issued["estimate_tokens"] = True
+        try:
+            model.warnings_issued["estimate_tokens"] = True
+        except AttributeError: pass
 
         # Compute that only on the main process for faster data processing.
         # see: https://github.com/huggingface/trl/pull/1255
